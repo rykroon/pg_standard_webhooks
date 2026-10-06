@@ -1,0 +1,6 @@
+comment = 'Helpers for sending Standard Webhooks compliant webhooks'
+default_version = '0.0.1'
+relocatable = false
+superuser = false
+trusted = true
+requires = 'http, pgcrypto'
