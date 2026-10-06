@@ -115,6 +115,20 @@ select cron.schedule('deliver-webhooks', '* * * * *', 'select public.deliver_pen
 
 One row per call to `send_webhook`: `msg_id`, `url`, `request_timestamp` (the `webhook-timestamp` sent), `payload`, `response_status`, `response_headers`, `response_body`, `error` (transport errors and timeouts, which are recorded rather than raised), `duration` and `created_at`. Secrets and signatures are not stored. Rows are included in `pg_dump`.
 
+## Development
+
+The `supabase/` project is a sandbox with the extension installed into the `webhooks` schema:
+
+- `supabase/migrations/20261006000000_extension_dependencies.sql` creates `pg_tle`, `http` and `pgcrypto`.
+- `supabase/migrations/20261006000001_install_pg_standard_webhooks.sql` installs the extension with `pgtle.install_extension` and creates it. This file is generated, so don't edit it by hand.
+
+After changing `pg_standard_webhooks--<version>.sql` or the control file:
+
+```sh
+scripts/generate-supabase-migration.sh
+supabase db reset
+```
+
 ## Caveats
 
 - **Synchronous HTTP.** `send_webhook` blocks until the response arrives or the timeout expires (the spec recommends 15–30s). Do not call it from triggers or user-facing transactions. Call it from a background job such as pg_cron instead.
