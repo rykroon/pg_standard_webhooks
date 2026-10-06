@@ -174,6 +174,7 @@ comment on function @extschema@.verify(@extschema@.msg_id, bigint, text, text, t
 
 create table @extschema@.webhook_attempts (
     id bigint generated always as identity primary key,
+    created_at timestamptz not null default now(),
     msg_id text not null,
     url text not null,
     request_timestamp timestamptz not null,
@@ -182,8 +183,7 @@ create table @extschema@.webhook_attempts (
     response_headers jsonb,
     response_body text,
     error text,
-    duration interval,
-    created_at timestamptz not null default now()
+    duration interval
 );
 
 comment on table @extschema@.webhook_attempts is
